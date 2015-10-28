@@ -1,9 +1,0 @@
-C:\Personal\GoldInventory\GoldInventory.Core\obj\Debug\GoldInventory.Core.csprojResolveAssemblyReference.cache
-C:\Personal\GoldInventory\GoldInventory.Core\bin\Debug\GoldInventory.Core.dll
-C:\Personal\GoldInventory\GoldInventory.Core\bin\Debug\GoldInventory.Core.pdb
-C:\Personal\GoldInventory\GoldInventory.Core\obj\Debug\GoldInventory.Core.dll
-C:\Personal\GoldInventory\GoldInventory.Core\obj\Debug\GoldInventory.Core.pdb
-C:\Personal\GoldInventory\GoldInventory.Core\bin\Debug\Parse.dll
-C:\Personal\GoldInventory\GoldInventory.Core\bin\Debug\Parse.NetFx45.dll
-C:\Personal\GoldInventory\GoldInventory.Core\bin\Debug\Parse.xml
-C:\Personal\GoldInventory\GoldInventory.Core\bin\Debug\Parse.NetFx45.xml
