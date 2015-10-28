@@ -1,0 +1,21 @@
+﻿@model GoldInventory.Models.ItemReview
+
+<div class="well">
+        <dl class="dl-horizontal">
+            <dt>Name</dt>
+            <dd>@Model.Name</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Type</dt>
+            <dd>@Model.Type</dd>
+        </dl>
+        <dl class="dl-horizontal">
+            <dt>Category Name</dt>
+            <dd>@Model.CategoryName</dd>
+        </dl>
+        <div class="text-right">
+            @Html.ActionLink("Edit", "Edit", new { id = @Model.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = @Model.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = @Model.Id })
+        </div>
+    </div>

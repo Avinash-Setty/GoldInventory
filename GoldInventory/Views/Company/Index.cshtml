@@ -1,0 +1,23 @@
+﻿@model GoldInventory.Models.Company
+
+@{
+    ViewBag.Title = "Company";
+}
+
+<h2>@Model.Name</h2>
+
+<div>
+    <h4>@Model.Description</h4>
+    <hr/>
+
+    <address>
+        <strong>Address:</strong><br>
+        @Html.DisplayFor(model => model.AddressLine1)<br>
+        @Html.DisplayFor(model => model.AddressLine2)<br>
+        @Html.DisplayFor(model => model.City),@Html.DisplayFor(model => model.State), @Html.DisplayFor(model => model.Country)
+    </address>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit") |
+    @Html.ActionLink("Back to List", "Index")
+</p>

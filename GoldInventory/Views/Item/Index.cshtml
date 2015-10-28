@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GoldInventory.Models.Item>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Items</h2>
+
+@*<form class="form-inline" method="GET">
+    <div class="form-group">
+        <label class="sr-only" for="searchControlId">Name</label>
+        <input type="search" class="form-control" name="searchTerm" id="searchControlId" placeholder="Name">
+    </div>
+    <button class="btn btn-default" type="submit">Search</button>
+</form>*@
+
+@*@using (Ajax.BeginForm(
+        new AjaxOptions
+        {
+            HttpMethod = "get",
+            InsertionMode = InsertionMode.Replace,
+            UpdateTargetId = "ItemList"
+        }))
+{
+    <form class="form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="searchControlId">Name</label>
+            <input type="search" class="form-control" name="searchTerm" id="searchControlId" placeholder="Name">
+        </div>
+        <button class="btn btn-default" type="submit">Search</button>
+    </form>
+}*@
+
+
+<form class="form-inline" method="GET" data-avi-ajax="true" data-avi-target="ItemList" action="@Url.Action("Index")" >
+    <div class="form-group">
+        <label class="sr-only" for="searchControlId">Name</label>
+        <input type="search" class="form-control" name="searchTerm" data-avi-autocomplete="@Url.Action("AutoComplete")" id="searchControlId" placeholder="Name">
+    </div>
+    <button class="btn btn-default" type="submit">Search</button>
+</form>
+<br/>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@Html.Partial("_ItemList", Model)

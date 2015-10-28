@@ -1,0 +1,23 @@
+﻿<!-- ko with: home -->
+<div class="jumbotron">
+    <h1>Inventory System</h1>
+    <p class="lead">This is a complete inventory management system for small businesses (5-99 employees). Dramatically increase profitability with an automated, real-time, user-friendly approach to inventory management. Eliminate inventory write-offs, quickly perform audits, and stop wasting time searching for lost inventory.</p>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h2 data-bind="text: CompanyName"></h2>
+        <p data-bind="text: CompanyDescription"></p>
+        <p>@Html.ActionLink("Learn more »", "Index", "Company", new { area = ""}, new {@class = "btn btn-default"})</p>
+    </div>
+
+    <div class="col-md-6">
+        <h2>Getting started</h2>
+        <p>
+            This application helps you to add/edit/delete item(s). It will also help to quickly find items you are looking for.
+        </p>
+        <p>@Html.ActionLink("Learn more »", "Index", "Item", new {area = ""}, new {@class="btn btn-default"})</p>
+    </div>
+
+</div>
+
+<!-- /ko -->
