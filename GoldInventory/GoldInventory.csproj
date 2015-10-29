@@ -247,6 +247,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MeController.cs" />
     <Compile Include="Controllers\ReviewsController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\LogAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -259,6 +260,7 @@
     <Compile Include="Models\ParseUser.cs" />
     <Compile Include="ParseWrappers\CompanyHelper.cs" />
     <Compile Include="ParseWrappers\ItemHelper.cs" />
+    <Compile Include="ParseWrappers\UserHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
@@ -383,6 +385,7 @@
     <Content Include="Views\Item\Details.cshtml" />
     <Content Include="Views\Item\_ItemList.cshtml" />
     <Content Include="Views\Company\Edit.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
