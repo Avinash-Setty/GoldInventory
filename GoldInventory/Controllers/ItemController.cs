@@ -35,9 +35,13 @@ namespace GoldInventory.Controllers
         }
 
         // GET: Reviews/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            var newItem = new Item
+            {
+                AvailableCategories = await new ItemCategoryHelper().GetAllItems()
+            };
+            return View(newItem);
         }
 
         // POST: Reviews/Create
@@ -60,9 +64,10 @@ namespace GoldInventory.Controllers
             }
         }
 
-        public ActionResult Edit(string id)
+        public async Task<ActionResult> Edit(string id)
         {
             var item = new ItemHelper().GetItemById(id);
+            item.AvailableCategories = await new ItemCategoryHelper().GetAllItems();
             return View(item);
         }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using GoldInventory.Model;
 
 namespace GoldInventory.Models
 {
@@ -22,5 +24,14 @@ namespace GoldInventory.Models
         [Required]
         [StringLength(512)]
         public string Name { get; set; }
+
+        public string CategoryId { get; set; }
+
+        [Display(Name = "Category")]
+        public string CategoryName { get; set; }
+
+        public IEnumerable<ItemCategory> AvailableCategories { get; set; }
+
+        public IEnumerable<ItemCategory> SelectedCategories { get; set; }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Validation;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -18,21 +16,34 @@ namespace GoldInventory.ParseWrappers
                 return new List<Item>(); ;
 
             var itemQuery = ParseObject.GetQuery("Item");
-            itemQuery.WhereEqualTo("CompanyId", ((ParseObject) (currentUser["CompanyId"])));
+            itemQuery.WhereEqualTo("CompanyId", ((ParseObject) (currentUser["CompanyId"])).ObjectId);
             var items = await itemQuery.FindAsync();
             if (items == null)
                 return new List<Item>();
 
-            var filteredItems = items.Where(item => ((ParseObject)item["CompanyId"]).ObjectId == ((ParseObject) (currentUser["CompanyId"])).ObjectId);
-            return filteredItems.Select(i => new Item
+            var allCategories = await new ItemCategoryHelper().GetAllItems();
+            var filteredItems = new List<Item>();
+            foreach (var item in items)
             {
-                Id = i.ObjectId,
-                CreatedAt = i.CreatedAt,
-                UpdatedAt = i.UpdatedAt,
-                Name = i["Name"]?.ToString(),
-                ItemWeight = i.Get<int>("ItemWeight"),
-                StoneWeight = i.Get<int>("StoneWeight")
-            });
+                if(!item.ContainsKey("CompanyId") || !item.ContainsKey("CategoryId"))
+                    continue;
+
+                if(item["CompanyId"].ToString() != ((ParseObject)(currentUser["CompanyId"])).ObjectId)
+                    continue;
+
+                filteredItems.Add(new Item
+                {
+                    Id = item.ObjectId,
+                    CreatedAt = item.CreatedAt,
+                    UpdatedAt = item.UpdatedAt,
+                    Name = item["Name"]?.ToString(),
+                    ItemWeight = item.Get<int>("ItemWeight"),
+                    StoneWeight = item.Get<int>("StoneWeight"),
+                    CategoryName = allCategories.FirstOrDefault(c => c.Id == item.Get<string>("CategoryId"))?.Name
+                });
+            }
+
+            return filteredItems;
         }
 
         public async Task SaveItem(Item item)
@@ -48,7 +59,8 @@ namespace GoldInventory.ParseWrappers
             itemObject["Name"] = item.Name;
             itemObject["ItemWeight"] = item.ItemWeight;
             itemObject["StoneWeight"] = item.StoneWeight;
-            itemObject["CompanyId"] = currentUser["CompanyId"];
+            itemObject["CategoryId"] = item.CategoryId;
+            itemObject["CompanyId"] = ((ParseObject)currentUser["CompanyId"]).ObjectId;
             await itemObject.SaveAsync();
         }
 
@@ -63,15 +75,18 @@ namespace GoldInventory.ParseWrappers
             if (itemObject == null)
                 return null;
 
-            if(((ParseObject)(currentUser["CompanyId"]))?.ObjectId != ((ParseObject)(itemObject["CompanyId"]))?.ObjectId)
+            if(((ParseObject)(currentUser["CompanyId"]))?.ObjectId != itemObject["CompanyId"].ToString())
                 return null;
 
+            var category = new ItemCategoryHelper().GetItemCategoryById(itemObject.Get<string>("CategoryId"));
             return new Item
             {
                 Id = itemObject.ObjectId,
                 Name = itemObject.Get<string>("Name"),
                 ItemWeight = itemObject.Get<int>("ItemWeight"),
                 StoneWeight = itemObject.Get<int>("StoneWeight"),
+                CategoryName = category?.Name,
+                CategoryId = category?.Id,
                 UpdatedAt = itemObject.UpdatedAt,
                 CreatedAt = itemObject.CreatedAt
             };
@@ -83,7 +98,7 @@ namespace GoldInventory.ParseWrappers
             if (currentUser == null)
                 return new List<Item>();
 
-            var itemQuery = ParseObject.GetQuery("Item").WhereEqualTo("CompanyId", currentUser["CompanyId"]).WhereContains("Name", name);
+            var itemQuery = ParseObject.GetQuery("Item").WhereEqualTo("CompanyId", ((ParseObject)currentUser["CompanyId"]).ObjectId).WhereContains("Name", name);
             var items = await itemQuery.FindAsync();
             return items?.Select(itemObject => new Item
             {
@@ -91,6 +106,7 @@ namespace GoldInventory.ParseWrappers
                 Name = itemObject.Get<string>("Name"),
                 ItemWeight = itemObject.Get<int>("ItemWeight"),
                 StoneWeight = itemObject.Get<int>("StoneWeight"),
+                CategoryId = itemObject.Get<string>("CategoryId"),
                 UpdatedAt = itemObject.UpdatedAt,
                 CreatedAt = itemObject.CreatedAt
             });

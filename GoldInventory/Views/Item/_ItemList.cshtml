@@ -12,6 +12,9 @@
                     Name
                 </th>
                 <th>
+                    Category
+                </th>
+                <th>
                     StoneWeight
                 </th>
                 <th>
@@ -31,6 +34,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.StoneWeight)
@@ -67,6 +73,10 @@
                             <tr>
                                 <td>Name</td>
                                 <td>@item.Name</td>
+                            </tr>
+                            <tr>
+                                <td>Category</td>
+                                <td>@item.CategoryName</td>
                             </tr>
                             <tr>
                                 <td>StoneWeight</td>

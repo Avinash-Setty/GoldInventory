@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="Company.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="ItemCategory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup>

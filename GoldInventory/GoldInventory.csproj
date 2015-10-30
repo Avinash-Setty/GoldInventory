@@ -241,6 +241,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MeViewModels.cs" />
     <Compile Include="Models\ParseUser.cs" />
+    <Compile Include="ParseWrappers\ItemCategoryHelper.cs" />
     <Compile Include="ParseWrappers\CompanyHelper.cs" />
     <Compile Include="ParseWrappers\ItemHelper.cs" />
     <Compile Include="ParseWrappers\UserHelper.cs" />
@@ -386,6 +388,12 @@
     <Content Include="Views\Item\_ItemList.cshtml" />
     <Content Include="Views\Company\Edit.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Shared\_MenuItems.cshtml" />
+    <Content Include="Views\Category\Index.cshtml" />
+    <Content Include="Views\Category\Details.cshtml" />
+    <Content Include="Views\Category\Create.cshtml" />
+    <Content Include="Views\Category\Edit.cshtml" />
+    <Content Include="Views\Category\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
