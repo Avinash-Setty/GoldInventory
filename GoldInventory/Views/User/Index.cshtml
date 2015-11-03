@@ -1,5 +1,16 @@
 ﻿@model IEnumerable<GoldInventory.Models.PUser>
 
+<h2>Users</h2>
+
+<form class="form-inline" method="GET" data-avi-ajax="true" data-avi-target="UserList" action="@Url.Action("Index")">
+    <div class="form-group">
+        <label class="sr-only" for="searchControlId">UserName or Email</label>
+        <input type="search" class="form-control" name="searchTerm" data-avi-autocomplete="@Url.Action("AutoComplete")" id="searchControlId" placeholder="UserName or Email">
+    </div>
+    <button class="btn btn-default" type="submit">Search</button>
+</form>
+<br />
+
 @if (@ViewBag.HideCreateLink == false)
 {
     <p>
@@ -7,32 +18,4 @@
     </p>
 }
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Role)
-        </th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-        </tr>
-    }
-
-</table>
+@Html.Partial("_UserList", Model)

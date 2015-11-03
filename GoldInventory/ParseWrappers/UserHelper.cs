@@ -8,17 +8,44 @@ namespace GoldInventory.ParseWrappers
 {
     public class UserHelper
     {
-        public async Task<IEnumerable<PUser>> GetCurrentCompanyUsers()
+        public async Task<IEnumerable<PUser>> GetCompanyUsersByNameOrEmail(string searchTerm, int resultsCount)
         {
             var currentUser = await UserUtility.GetCurrentParseUser();
-            if (currentUser == null)
+            if (currentUser == null || string.IsNullOrWhiteSpace(searchTerm) || resultsCount <= 0)
                 return new List<PUser>();
-            
-            var currentCompanyUsers = await ParseUser.Query.WhereEqualTo("CompanyId", currentUser["CompanyId"].ToString()).FindAsync();
+
+            var usernameQuery = from user in ParseUser.Query
+                where user.Get<string>("CompanyId").Equals(currentUser["CompanyId"].ToString())
+                      && user.Get<string>("username").Contains(searchTerm)
+                select user;
+
+            var emailQuery = from user in ParseUser.Query
+                             where user.Get<string>("CompanyId").Equals(currentUser["CompanyId"].ToString())
+                                   && user.Get<string>("email").Contains(searchTerm)
+                             select user;
+
+            var allUsers = await GetCurrentCompanyUsers(usernameQuery.Or(emailQuery));
+            return allUsers;
+        }
+
+        public async Task<IEnumerable<PUser>> GetCurrentCompanyUsers(ParseQuery<ParseUser> query = null)
+        {
+            IEnumerable<ParseUser> currentCompanyUsers;
+            if (query == null)
+            {
+                var currentUser = await UserUtility.GetCurrentParseUser();
+                if (currentUser == null)
+                    return new List<PUser>();
+
+                currentCompanyUsers = await ParseUser.Query.WhereEqualTo("CompanyId", currentUser["CompanyId"].ToString()).FindAsync();
+            }
+            else
+                currentCompanyUsers = await query.FindAsync();
+
             if (currentCompanyUsers == null)
                 return new List<PUser>();
 
-            return currentCompanyUsers.Where(u => u.ObjectId != currentUser.ObjectId)
+            return currentCompanyUsers
                 .Select(user => new PUser
                 {
                     Id = user.ObjectId,

@@ -45,7 +45,8 @@ namespace GoldInventory
                  "~/Content/jquery-ui.min.css",
                  "~/Content/jquery-ui.structure.min.css",
                  "~/Content/jquery-ui.theme.css",
-                 "~/Content/Site.css"));
+                 "~/Content/Site.css",
+                 "~/Content/PagedList.css"));
         }
     }
 }

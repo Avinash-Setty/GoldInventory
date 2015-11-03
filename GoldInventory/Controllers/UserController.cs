@@ -1,18 +1,34 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
+using PagedList;
 
 namespace GoldInventory.Controllers
 {
     [Authorize]
     public class UserController : Controller
     {
+        public async Task<ActionResult> AutoComplete(string term)
+        {
+            var users = (await new UserHelper().GetCompanyUsersByNameOrEmail(term, 10)).Select(
+                i => new {label = i.UserName.Contains(term) ? i.UserName : i.Email});
+            return Json(users, JsonRequestBehavior.AllowGet);
+        }
+
         // GET: User
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string searchTerm = null, int page = 1)
         {
             ViewBag.HideCreateLink = !await UserUtility.IsUserHasAdminRole();
-            var users = await new UserHelper().GetCurrentCompanyUsers();
+            var users = (string.IsNullOrWhiteSpace(searchTerm)
+                ? await new UserHelper().GetCurrentCompanyUsers()
+                : await new UserHelper().GetCompanyUsersByNameOrEmail(searchTerm, 10)).ToPagedList(page, 10);
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_UserList", users);
+            }
+
             return View(users);
         }
 

@@ -1,6 +1,6 @@
-﻿using System.Web;
+﻿using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
@@ -36,13 +36,13 @@ namespace GoldInventory.Controllers
         // GET api/Me
         public GetViewModel Get()
         {
-            var user = UserStore.FindById(User.Identity.GetUserId());
+            //var user = UserStore.FindById(User.Identity.GetUserId());
             return new GetViewModel();
         }
 
-        public Company GetCompanyInfo()
+        public async Task<Company> GetCompanyInfo()
         {
-            var info = new CompanyHelper().GetCurrentCompany().Result;
+            var info = await new CompanyHelper().GetCurrentCompany();
             return info;
         }
     }
