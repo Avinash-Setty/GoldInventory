@@ -42,7 +42,7 @@ namespace GoldInventory.Controllers
 
         public Company GetCompanyInfo()
         {
-            var info = new CompanyHelper().GetCurrentCompany();
+            var info = new CompanyHelper().GetCurrentCompany().Result;
             return info;
         }
     }

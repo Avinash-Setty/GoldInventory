@@ -12,17 +12,17 @@ namespace GoldInventory.ParseWrappers
 
         public async Task<IEnumerable<ItemCategory>> GetAllItems()
         {
-            var currentUser = ParseUser.CurrentUser;
+            var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
                 return new List<ItemCategory>(); ;
 
             var itemQuery = ParseObject.GetQuery("Category");
-            itemQuery.WhereEqualTo("CompanyId", ((ParseObject)currentUser["CompanyId"]).ObjectId);
+            itemQuery.WhereEqualTo("CompanyId", currentUser["CompanyId"].ToString());
             var items = await itemQuery.FindAsync();
             if (items == null)
                 return new List<ItemCategory>();
 
-            return items.Select(i => new ItemCategory
+            return items.Where(c => c["CompanyId"].ToString() == currentUser["CompanyId"].ToString()).Select(i => new ItemCategory
             {
                 Id = i.ObjectId,
                 CreatedAt = i.CreatedAt,
@@ -34,7 +34,7 @@ namespace GoldInventory.ParseWrappers
 
         public async Task SaveItemCategory(ItemCategory category)
         {
-            var currentUser = ParseUser.CurrentUser;
+            var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
                 return;
 
@@ -44,7 +44,7 @@ namespace GoldInventory.ParseWrappers
 
             itemObject["Name"] = category.Name;
             itemObject["Description"] = category.Description;
-            itemObject["CompanyId"] = ((ParseObject)currentUser["CompanyId"]).ObjectId;
+            itemObject["CompanyId"] = currentUser["CompanyId"].ToString();
             RawItemCategory = itemObject;
             await itemObject.SaveAsync();
         }
@@ -60,7 +60,7 @@ namespace GoldInventory.ParseWrappers
             if (itemObject == null)
                 return null;
 
-            if (((ParseObject)(currentUser["CompanyId"]))?.ObjectId != itemObject["CompanyId"]?.ToString())
+            if (currentUser["CompanyId"].ToString() != itemObject["CompanyId"]?.ToString())
                 return null;
 
             RawItemCategory = itemObject;

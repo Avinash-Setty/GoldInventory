@@ -1,40 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 
 namespace GoldInventory.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         // GET: User
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var users = new UserHelper().GetCurrentCompanyUsers().Result;
+            ViewBag.HideCreateLink = !await UserUtility.IsUserHasAdminRole();
+            var users = await new UserHelper().GetCurrentCompanyUsers();
             return View(users);
         }
 
-        // GET: User/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
         // GET: User/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            if (await UserUtility.IsUserHasAdminRole())
+                return View(new PUser());
+            
+            return Content("You do not have enough permission to create User.");
         }
 
         // POST: User/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public async Task<ActionResult> Create(PUser newUser)
         {
             try
             {
-                // TODO: Add insert logic here
+                var success = await new UserHelper().CreateUsersInCurrentCompany(newUser.Email, newUser.UserName, newUser.Password, newUser.Role);
+                if (!success)
+                    return View(newUser);
 
                 return RedirectToAction("Index");
             }
@@ -45,20 +44,26 @@ namespace GoldInventory.Controllers
         }
 
         // GET: User/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(string id)
         {
-            return View();
+            var user = await new UserHelper().GetUserById(id);
+            if (user == null)
+                return View();
+
+            return View(user);
         }
 
         // POST: User/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public async Task<ActionResult> Edit(string id, PUser existingUser)
         {
             try
             {
-                // TODO: Add update logic here
+                var result = await new UserHelper().EditUsersInCurrentCompany(id, existingUser.Email, existingUser.UserName);
+                if (result)
+                    return RedirectToAction("Index");
 
-                return RedirectToAction("Index");
+                return View(existingUser);
             }
             catch
             {
@@ -67,18 +72,24 @@ namespace GoldInventory.Controllers
         }
 
         // GET: User/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(string id)
         {
-            return View();
+            var user = await new UserHelper().GetUserById(id);
+            if (user == null)
+                return View();
+
+            return View(user);
         }
 
         // POST: User/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public async Task<ActionResult> Delete(string id, PUser user)
         {
             try
             {
-                // TODO: Add delete logic here
+                var result =await  new UserHelper().DeleteUserInCurrentCompany(id);
+                if (!result)
+                    return View();
 
                 return RedirectToAction("Index");
             }

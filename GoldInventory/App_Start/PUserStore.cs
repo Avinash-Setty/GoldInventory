@@ -32,7 +32,8 @@ namespace GoldInventory
         public async Task CreateAsync(PUser user)
         {
             user.User["PasswordFailures"] = 0;
-            user.User["CompanyId"] = (ParseObject)new CompanyHelper().SaveCompany(user.CompanyInfo).Result;
+            user.User["CompanyId"] = ((ParseObject) await new CompanyHelper().SaveCompany(user.CompanyInfo)).ObjectId;
+            user.User["Role"] = UserRole.Admin;
             await user.User.SignUpAsync();
         }
 

@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using GoldInventory.Models;
 using Microsoft.AspNet.Identity;
+using Parse;
 
 namespace GoldInventory
 {
@@ -45,17 +46,18 @@ namespace GoldInventory
                 throw new ArgumentNullException("user");
 
             var id = new ClaimsIdentity(authenticationType, UserNameClaimType, RoleClaimType);
+            id.AddClaim(new Claim(SecurityStampClaimType, (await ParseSession.GetCurrentSessionAsync()).SessionToken, "http://www.w3.org/2001/XMLSchema#string"));
             id.AddClaim(new Claim(UserIdClaimType, user.User.ObjectId, "http://www.w3.org/2001/XMLSchema#string"));
             id.AddClaim(new Claim(UserNameClaimType, user.UserName, "http://www.w3.org/2001/XMLSchema#string"));
             id.AddClaim(new Claim("http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider", "ASP.NET Identity", "http://www.w3.org/2001/XMLSchema#string"));
             if (manager.SupportsUserSecurityStamp)
             {
-                ClaimsIdentity claimsIdentity1 = id;
-                string securityStampClaimType = SecurityStampClaimType;
-                ClaimsIdentity claimsIdentity2 = claimsIdentity1;
-                string str = await manager.GetSecurityStampAsync(user.User.ObjectId).ConfigureAwait(false);
-                Claim claim = new Claim(securityStampClaimType, str ?? Guid.NewGuid().ToString());
-                claimsIdentity2.AddClaim(claim);
+                //ClaimsIdentity claimsIdentity1 = id;
+                //string securityStampClaimType = SecurityStampClaimType;
+                //ClaimsIdentity claimsIdentity2 = claimsIdentity1;
+                //string str = await manager.GetSecurityStampAsync(user.User.ObjectId).ConfigureAwait(false);
+                //Claim claim = new Claim(securityStampClaimType, str ?? Guid.NewGuid().ToString());
+                //claimsIdentity2.AddClaim(claim);
             }
             if (manager.SupportsUserRole)
             {

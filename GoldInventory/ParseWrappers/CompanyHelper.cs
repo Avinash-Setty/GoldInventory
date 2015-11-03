@@ -6,18 +6,18 @@ namespace GoldInventory.ParseWrappers
 {
     public class CompanyHelper
     {
-        public Company GetCurrentCompany()
+        public async Task<Company> GetCurrentCompany()
         {
-            var currentUser = ParseUser.CurrentUser;
+            var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
                 return null;
             
-            return GetCompanyById(((ParseObject)(currentUser["CompanyId"]))?.ObjectId);
+            return GetCompanyById(currentUser["CompanyId"].ToString());
         }
 
         public Company GetCompanyById(string id)
         {
-            var company = (ParseObject)GetRawParseCompanyObjectById(id);
+            var company = GetRawParseCompanyObjectById(id);
             if (company == null)
                 return null;
 
@@ -34,7 +34,7 @@ namespace GoldInventory.ParseWrappers
             };
         }
 
-        public object GetRawParseCompanyObjectById(string id)
+        public ParseObject GetRawParseCompanyObjectById(string id)
         {
             var companyQuery = ParseObject.GetQuery("Company");
             return companyQuery.GetAsync(id).Result;

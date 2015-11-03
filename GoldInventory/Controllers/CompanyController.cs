@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using System.Web.UI;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
+using Microsoft.AspNet.Identity;
 
 namespace GoldInventory.Controllers
 {
@@ -14,9 +16,9 @@ namespace GoldInventory.Controllers
     public class CompanyController : Controller
     {
         [OutputCache(Duration = 520, Location = OutputCacheLocation.Client)]
-        public ActionResult GetCompanyName()
+        public async Task<ActionResult> GetCompanyName()
         {
-            var companyInfo = new CompanyHelper().GetCurrentCompany();
+            var companyInfo = await new CompanyHelper().GetCurrentCompany();
             if (companyInfo == null)
                 return Content("Inventory System");
 
@@ -24,9 +26,11 @@ namespace GoldInventory.Controllers
         }
 
         // GET: Company
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var companyInfo = new CompanyHelper().GetCurrentCompany();
+            //HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            //RedirectToActionPermanent("LogOff", "Account");
+            var companyInfo = await new CompanyHelper().GetCurrentCompany();
             if (companyInfo == null)
             {
                 RedirectToActionPermanent("LogOff", "Account");

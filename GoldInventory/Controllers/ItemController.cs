@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.UI;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 using PagedList;
@@ -66,7 +64,7 @@ namespace GoldInventory.Controllers
 
         public async Task<ActionResult> Edit(string id)
         {
-            var item = new ItemHelper().GetItemById(id);
+            var item = await new ItemHelper().GetItemById(id);
             item.AvailableCategories = await new ItemCategoryHelper().GetAllItems();
             return View(item);
         }
@@ -84,20 +82,23 @@ namespace GoldInventory.Controllers
             return View(item);
         }
 
-        public ActionResult Delete(string id)
+        public async Task<ActionResult> Delete(string id)
         {
-            return View();
+            var item = await new ItemHelper().GetItemById(id);
+            return View(item);
         }
 
         // POST: Reviews/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public async Task<ActionResult> Delete(string id, FormCollection collection)
         {
             try
             {
-                // TODO: Add delete logic here
+                var result = await new ItemHelper().DeleteItemById(id);
+                if (result)
+                    return RedirectToAction("Index");
 
-                return RedirectToAction("Index");
+                return View();
             }
             catch
             {
@@ -106,9 +107,9 @@ namespace GoldInventory.Controllers
         }
 
         // GET: Reviews/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var item = new ItemHelper().GetItemById(id);
+            var item = await new ItemHelper().GetItemById(id);
             return View(item);
         }
     }

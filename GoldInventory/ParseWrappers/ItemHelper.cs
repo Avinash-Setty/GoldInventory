@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using GoldInventory.Models;
 using Parse;
 
@@ -11,24 +10,24 @@ namespace GoldInventory.ParseWrappers
     {
         public async Task<IEnumerable<Item>> GetAllItems()
         {
-            var currentUser = ParseUser.CurrentUser;
+            var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
-                return new List<Item>(); ;
+                return new List<Item>();
 
             var itemQuery = ParseObject.GetQuery("Item");
-            itemQuery.WhereEqualTo("CompanyId", ((ParseObject) (currentUser["CompanyId"])).ObjectId);
+            itemQuery.WhereEqualTo("CompanyId", currentUser["CompanyId"].ToString());
             var items = await itemQuery.FindAsync();
             if (items == null)
                 return new List<Item>();
 
-            var allCategories = await new ItemCategoryHelper().GetAllItems();
+            var allCategories = (await new ItemCategoryHelper().GetAllItems()).ToList();
             var filteredItems = new List<Item>();
             foreach (var item in items)
             {
-                if(!item.ContainsKey("CompanyId") || !item.ContainsKey("CategoryId"))
+                if (!item.ContainsKey("CompanyId") || !item.ContainsKey("CategoryId"))
                     continue;
 
-                if(item["CompanyId"].ToString() != ((ParseObject)(currentUser["CompanyId"])).ObjectId)
+                if (item["CompanyId"].ToString() != currentUser["CompanyId"].ToString())
                     continue;
 
                 filteredItems.Add(new Item
@@ -60,24 +59,13 @@ namespace GoldInventory.ParseWrappers
             itemObject["ItemWeight"] = item.ItemWeight;
             itemObject["StoneWeight"] = item.StoneWeight;
             itemObject["CategoryId"] = item.CategoryId;
-            itemObject["CompanyId"] = ((ParseObject)currentUser["CompanyId"]).ObjectId;
+            itemObject["CompanyId"] = currentUser["CompanyId"].ToString();
             await itemObject.SaveAsync();
         }
 
-        public Item GetItemById(string id)
+        public async Task<Item> GetItemById(string id)
         {
-            var currentUser = ParseUser.CurrentUser;
-            if (currentUser == null)
-                return null;
-
-            var itemQuery = ParseObject.GetQuery("Item");
-            var itemObject = itemQuery.GetAsync(id).Result;
-            if (itemObject == null)
-                return null;
-
-            if(((ParseObject)(currentUser["CompanyId"]))?.ObjectId != itemObject["CompanyId"].ToString())
-                return null;
-
+            var itemObject = await GetRawItemObjectById(id);
             var category = new ItemCategoryHelper().GetItemCategoryById(itemObject.Get<string>("CategoryId"));
             return new Item
             {
@@ -92,13 +80,37 @@ namespace GoldInventory.ParseWrappers
             };
         }
 
+        private async Task<ParseObject> GetRawItemObjectById(string id)
+        {
+            var currentUser = await UserUtility.GetCurrentParseUser();
+            if (currentUser == null)
+                return null;
+
+            var itemQuery = ParseObject.GetQuery("Item");
+            var itemObject = await itemQuery.GetAsync(id);
+            if (currentUser["CompanyId"].ToString() != itemObject["CompanyId"].ToString())
+                return null;
+
+            return itemObject;
+        }
+
+        public async Task<bool> DeleteItemById(string id)
+        {
+            var rawItem = await GetRawItemObjectById(id);
+            if (rawItem == null)
+                return false;
+
+            await rawItem.DeleteAsync();
+            return true;
+        } 
+
         public async Task<IEnumerable<Item>> GetItemsByName(string name)
         {
-            var currentUser = ParseUser.CurrentUser;
+            var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
                 return new List<Item>();
 
-            var itemQuery = ParseObject.GetQuery("Item").WhereEqualTo("CompanyId", ((ParseObject)currentUser["CompanyId"]).ObjectId).WhereContains("Name", name);
+            var itemQuery = ParseObject.GetQuery("Item").WhereEqualTo("CompanyId", currentUser["CompanyId"].ToString()).WhereContains("Name", name);
             var items = await itemQuery.FindAsync();
             return items?.Select(itemObject => new Item
             {

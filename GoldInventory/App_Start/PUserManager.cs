@@ -43,7 +43,7 @@ namespace GoldInventory
         {
             var existingUser = await ParseUser.LogInAsync(user.UserName, password);
             user.User = existingUser;
-            user.Password = password;
+            user.Password = password;            
             if (existingUser != null)
                 return true;
 
