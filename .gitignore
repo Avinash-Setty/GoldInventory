@@ -45,3 +45,6 @@ Temporary Items
 *.dll
 *.pdb
 *.cache
+*.xml
+*.targets
+*.exe
