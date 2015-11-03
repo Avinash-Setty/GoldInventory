@@ -86,8 +86,10 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="ItemAttribute.cs" />
     <Compile Include="ItemCategory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

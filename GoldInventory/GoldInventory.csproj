@@ -259,6 +259,8 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MeViewModels.cs" />
     <Compile Include="Models\PUser.cs" />
+    <Compile Include="ParseWrappers\AttributeHelper.cs" />
+    <Compile Include="ParseWrappers\ItemAttributeHelper.cs" />
     <Compile Include="ParseWrappers\ItemCategoryHelper.cs" />
     <Compile Include="ParseWrappers\CompanyHelper.cs" />
     <Compile Include="ParseWrappers\ItemHelper.cs" />

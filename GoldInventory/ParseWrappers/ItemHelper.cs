@@ -47,7 +47,7 @@ namespace GoldInventory.ParseWrappers
 
         public async Task SaveItem(Item item)
         {
-            var currentUser = ParseUser.CurrentUser;
+            var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
                 return;
 
