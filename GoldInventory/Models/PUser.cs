@@ -24,7 +24,9 @@ namespace GoldInventory.Models
         [Display(Name = "Password")]
         public string Password { get; set; }
 
+        
         [Display(Name = "Confirm Password")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         [Required]

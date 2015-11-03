@@ -47,6 +47,9 @@ namespace GoldInventory.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return View(newUser);
+
                 var success = await new UserHelper().CreateUsersInCurrentCompany(newUser.Email, newUser.UserName, newUser.Password, newUser.Role);
                 if (!success)
                     return View(newUser);
@@ -55,7 +58,7 @@ namespace GoldInventory.Controllers
             }
             catch
             {
-                return View();
+                return View(newUser);
             }
         }
 
