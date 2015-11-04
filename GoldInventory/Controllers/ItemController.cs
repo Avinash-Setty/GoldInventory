@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 using PagedList;
+using WebGrease.Css.Extensions;
 
 namespace GoldInventory.Controllers
 {
@@ -37,20 +38,31 @@ namespace GoldInventory.Controllers
         {
             var newItem = new Item
             {
-                AvailableCategories = await new ItemCategoryHelper().GetAllItems()
+                AvailableCategories = await new ItemCategoryHelper().GetAllItems(),
+                AssociatedAttributes = await new ItemAttributeHelper().GetBareAttributes()
             };
             return View(newItem);
         }
 
         // POST: Reviews/Create
         [HttpPost]
-        public async Task<ActionResult> Create([Bind(Exclude = "CreatedAt,UpdatedAt,Id")] Item item)
+        public async Task<ActionResult> Create([Bind(Exclude = "CreatedAt,UpdatedAt,Id")] FormCollection collection)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await new ItemHelper().SaveItem(item);
+                    var attributes = (await new ItemAttributeHelper().GetBareAttributes()).ToList();
+                    attributes.ForEach(attr => attr.Value = collection[attr.AttributeId]);
+                    var newItem = new Item
+                    {
+                        AssociatedAttributes = attributes,
+                        CategoryId = collection["CategoryId"],
+                        ItemWeight = int.Parse(collection["ItemWeight"]),
+                        StoneWeight = int.Parse(collection["StoneWeight"]),
+                        Name = collection["Name"]
+                    };
+                    await new ItemHelper().SaveItem(newItem);
                     return RedirectToAction("Index");
                 }
 

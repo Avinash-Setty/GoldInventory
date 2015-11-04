@@ -86,7 +86,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attribute.cs" />
+    <Compile Include="CustomAttribute.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="ItemAttribute.cs" />

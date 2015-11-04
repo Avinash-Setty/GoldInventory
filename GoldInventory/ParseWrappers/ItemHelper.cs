@@ -3,9 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoldInventory.Models;
 using Parse;
+using WebGrease.Css.Extensions;
 
 namespace GoldInventory.ParseWrappers
 {
+    public class SupportedAttributeTypes
+    {
+        public static readonly string String = "string";
+        public static readonly string Number = "number";
+    }
     public class ItemHelper
     {
         public async Task<IEnumerable<Item>> GetAllItems()
@@ -42,7 +48,16 @@ namespace GoldInventory.ParseWrappers
                 });
             }
 
+            await AssociateAllItems(filteredItems);
             return filteredItems;
+        }
+
+        private async Task AssociateAllItems(List<Item> items)
+        {
+            var allAttrs = await new AttributeHelper().GetAllAttributes();
+            var allItemAttrs = (await new ItemAttributeHelper().GetAllItemAttributesByItemIds(items.Select(i => i.Id))).ToList();
+            allItemAttrs.ForEach(i => i.AttributeName = allAttrs.FirstOrDefault(a => a.Id == i.AttributeId)?.Name ?? "Error");
+            items.ForEach(i => i.AssociatedAttributes = allItemAttrs.Where(a => a.ItemId == i.Id));
         }
 
         public async Task SaveItem(Item item)
@@ -61,13 +76,16 @@ namespace GoldInventory.ParseWrappers
             itemObject["CategoryId"] = item.CategoryId;
             itemObject["CompanyId"] = currentUser["CompanyId"].ToString();
             await itemObject.SaveAsync();
+
+            item.AssociatedAttributes.ForEach(attr => attr.ItemId = itemObject.ObjectId);
+            await new ItemAttributeHelper().SaveAllItemAttributes(item.AssociatedAttributes);
         }
 
         public async Task<Item> GetItemById(string id)
         {
             var itemObject = await GetRawItemObjectById(id);
             var category = new ItemCategoryHelper().GetItemCategoryById(itemObject.Get<string>("CategoryId"));
-            return new Item
+            var item = new Item
             {
                 Id = itemObject.ObjectId,
                 Name = itemObject.Get<string>("Name"),
@@ -78,6 +96,8 @@ namespace GoldInventory.ParseWrappers
                 UpdatedAt = itemObject.UpdatedAt,
                 CreatedAt = itemObject.CreatedAt
             };
+            await AssociateAllItems(new List<Item> {item});
+            return item;
         }
 
         private async Task<ParseObject> GetRawItemObjectById(string id)

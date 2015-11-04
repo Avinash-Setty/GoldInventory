@@ -30,6 +30,8 @@ namespace GoldInventory.Models
         [Display(Name = "Category")]
         public string CategoryName { get; set; }
 
+        public IEnumerable<ItemAttribute> AssociatedAttributes { get; set; }
+
         public IEnumerable<ItemCategory> AvailableCategories { get; set; }
 
         public IEnumerable<ItemCategory> SelectedCategories { get; set; }

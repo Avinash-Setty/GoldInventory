@@ -39,12 +39,23 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ItemWeight, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ItemWeight, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.ItemWeight, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ItemWeight, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.ItemWeight, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.ItemWeight, "", new {@class = "text-danger"})
             </div>
         </div>
+
+        @foreach (var attr in Model.AssociatedAttributes)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-2">@attr.AttributeName</label>
+                <div class="col-md-10">
+                    <input id="@attr.AttributeId" name="@attr.AttributeId" class="form-control" />
+                    <span class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="@attr.AttributeId"></span>
+                </div>
+            </div>
+        }
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

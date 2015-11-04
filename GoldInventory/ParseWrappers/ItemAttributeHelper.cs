@@ -33,18 +33,37 @@ namespace GoldInventory.ParseWrappers
             return filteredItemAttrs;
         }
 
-        public void SaveAllItemAttributes(IEnumerable<ItemAttribute> attributes)
+        public async Task<IEnumerable<ItemAttribute>> GetBareAttributes()
+        {
+            var allAttrs = await new AttributeHelper().GetAllAttributes();
+            return allAttrs.Select(a => new ItemAttribute
+            {
+                AttributeName = a.Name,
+                AttributeId = a.Id,
+                AttributeType = a.Type
+            });
+        }
+
+        public async Task<IEnumerable<ParseObject>> GetAllRawItemAttributesByIds(IEnumerable<string> ids)
+        {
+            var attrQuery = ParseObject.GetQuery("ItemAttribute");
+            attrQuery.WhereContainedIn("Id", ids);
+            var attrs = await attrQuery.FindAsync();
+            if (attrs == null)
+                return new List<ParseObject>();
+
+           return attrs;
+        }
+
+        public async Task SaveAllItemAttributes(IEnumerable<ItemAttribute> attributes)
         {
             var allTasks = attributes.Select(SaveItemAttribute).ToList();
-            foreach (var task in allTasks)
-                task.Start();
-
-            Task.WaitAll(allTasks.ToArray());
+            await Task.WhenAll(allTasks);
         }
 
         public Task SaveItemAttribute(ItemAttribute attribute)
         {
-            var itemObject = new ParseObject("CustomAttribute");
+            var itemObject = new ParseObject("ItemAttribute");
             if (!string.IsNullOrEmpty(attribute.Id))
                 itemObject.ObjectId = attribute.Id;
 
@@ -54,8 +73,6 @@ namespace GoldInventory.ParseWrappers
             return itemObject.SaveAsync();
         }
 
-        
-
         public async Task<bool> DeleteItemAttributeByItemId(string itemId)
         {
             var rawItemAttr = await GetRawItemAttributeObjectByItemId(itemId);
@@ -63,10 +80,7 @@ namespace GoldInventory.ParseWrappers
                 return false;
 
             var tasks = rawItemAttr.Select(attr => attr.DeleteAsync()).ToList();
-            foreach (var task in tasks)
-                task.Start();
-
-            Task.WaitAll(tasks.ToArray());
+            await Task.WhenAll(tasks);
             return true;
         }
 

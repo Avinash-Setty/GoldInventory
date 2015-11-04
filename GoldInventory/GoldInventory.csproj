@@ -243,6 +243,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\CustomAttributeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -401,6 +402,10 @@
     <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\Item\Delete.cshtml" />
     <Content Include="Views\User\_UserList.cshtml" />
+    <Content Include="Views\CustomAttribute\Index.cshtml" />
+    <Content Include="Views\CustomAttribute\Create.cshtml" />
+    <Content Include="Views\CustomAttribute\Edit.cshtml" />
+    <Content Include="Views\CustomAttribute\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

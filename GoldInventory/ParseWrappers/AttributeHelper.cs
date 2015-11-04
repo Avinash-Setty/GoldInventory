@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GoldInventory.Model;
 using Parse;
+using WebGrease.Css.Extensions;
 
 namespace GoldInventory.ParseWrappers
 {
@@ -64,6 +66,7 @@ namespace GoldInventory.ParseWrappers
             {
                 Id = attributeObject.ObjectId,
                 Name = attributeObject.Get<string>("Name"),
+                Type = attributeObject.Get<string>("Type"),
                 UpdatedAt = attributeObject.UpdatedAt,
                 CreatedAt = attributeObject.CreatedAt
             };
@@ -88,6 +91,13 @@ namespace GoldInventory.ParseWrappers
             var rawItem = await GetRawCustomAttributeObjectById(id);
             if (rawItem == null)
                 return false;
+
+            var allItemAttributes = (await new ItemAttributeHelper().GetAllRawItemAttributesByIds(new List<string> {id}))?.ToList();
+            if (allItemAttributes != null && allItemAttributes.Any())
+            {
+                var deleteTasks = allItemAttributes.Select(attr => attr.DeleteAsync()).ToList();
+                await Task.WhenAll(deleteTasks.ToArray());
+            }
 
             await rawItem.DeleteAsync();
             return true;

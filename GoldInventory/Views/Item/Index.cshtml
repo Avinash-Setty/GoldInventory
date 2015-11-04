@@ -42,6 +42,7 @@
 <br/>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create") |
+    @Html.ActionLink("Custom Item Attributes", "Index", "CustomAttribute", new { area = "" }, null)
 </p>
 @Html.Partial("_ItemList", Model)
