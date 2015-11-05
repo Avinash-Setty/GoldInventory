@@ -10,7 +10,7 @@ namespace GoldInventory.ParseWrappers
     {
         public ParseObject RawItemCategory { get; set; }
 
-        public async Task<IEnumerable<ItemCategory>> GetAllItems()
+        public async Task<IEnumerable<ItemCategory>> GetAllItemCategories()
         {
             var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)

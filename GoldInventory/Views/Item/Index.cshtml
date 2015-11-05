@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GoldInventory.Models.Item>
+﻿@model IPagedList<GoldInventory.Models.Item>
 
 @{
     ViewBag.Title = "Index";
@@ -45,4 +45,4 @@
     @Html.ActionLink("Create New", "Create") |
     @Html.ActionLink("Custom Item Attributes", "Index", "CustomAttribute", new { area = "" }, null)
 </p>
-@Html.Partial("_ItemList", Model)
+@Html.Partial("_ItemList", Model, ViewData)

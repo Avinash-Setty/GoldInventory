@@ -10,7 +10,7 @@ namespace GoldInventory.Controllers
         // GET: Category
         public async Task<ActionResult> Index()
         {
-            var categories = await new ItemCategoryHelper().GetAllItems();
+            var categories = await new ItemCategoryHelper().GetAllItemCategories();
             return View(categories);
         }
 

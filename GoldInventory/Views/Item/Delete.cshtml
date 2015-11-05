@@ -37,6 +37,12 @@
             @Html.DisplayFor(model => model.CategoryName)
         </dd>
 
+        @foreach (var attr in Model.AssociatedAttributes)
+        {
+            <dt>@attr.AttributeName</dt>
+            <dd>@attr.Value</dd>
+        }
+
         <dt>
             @Html.DisplayNameFor(model => model.CreatedAt)
         </dt>

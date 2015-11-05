@@ -44,15 +44,16 @@ namespace GoldInventory.ParseWrappers
             });
         }
 
-        public async Task<IEnumerable<ParseObject>> GetAllRawItemAttributesByIds(IEnumerable<string> ids)
+        public async Task<IEnumerable<ParseObject>> GetAllRawItemAttributesByAttrIds(IEnumerable<string> attributeIds)
         {
             var attrQuery = ParseObject.GetQuery("ItemAttribute");
-            attrQuery.WhereContainedIn("Id", ids);
+            var ids = attributeIds as IList<string> ?? attributeIds.ToList();
+            attrQuery.WhereContainedIn("AttributeId", ids);
             var attrs = await attrQuery.FindAsync();
             if (attrs == null)
                 return new List<ParseObject>();
 
-           return attrs;
+            return attrs.Where(a => ids.Any(at => at == a["AttributeId"].ToString()));
         }
 
         public async Task SaveAllItemAttributes(IEnumerable<ItemAttribute> attributes)
@@ -88,7 +89,7 @@ namespace GoldInventory.ParseWrappers
         {
             var attrQuery = ParseObject.GetQuery("ItemAttribute");
             attrQuery.WhereEqualTo("ItemId", itemId);
-            return await attrQuery.FindAsync();
+            return (await attrQuery.FindAsync()).Where(at => at["ItemId"].ToString() == itemId);
         }
     }
 }

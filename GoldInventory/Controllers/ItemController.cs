@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 using PagedList;
-using WebGrease.Css.Extensions;
 
 namespace GoldInventory.Controllers
 {
@@ -14,7 +13,7 @@ namespace GoldInventory.Controllers
 
         public async Task<ActionResult> AutoComplete(string term)
         {
-            var items = (await new ItemHelper().GetItemsByName(term)).Take(10).Select(i => new {label = i.Name});
+            var items = (await new ItemHelper().GetItemsByName(term, false)).Take(10).Select(i => new { label = i.Name });
             return Json(items, JsonRequestBehavior.AllowGet);
         }
 
@@ -24,7 +23,8 @@ namespace GoldInventory.Controllers
             var items = ((string.IsNullOrWhiteSpace(searchTerm))
                     ? await new ItemHelper().GetAllItems()
                     : await new ItemHelper().GetItemsByName(searchTerm)).ToPagedList(page, 10);
-
+            var associatedAttributes = await new ItemAttributeHelper().GetBareAttributes();
+            ViewData.Add("AttributeNames", associatedAttributes.Select(a => a.AttributeName).OrderBy(a => a));
             if (Request.IsAjaxRequest())
             {
                 return PartialView("_ItemList", items);
@@ -38,7 +38,7 @@ namespace GoldInventory.Controllers
         {
             var newItem = new Item
             {
-                AvailableCategories = await new ItemCategoryHelper().GetAllItems(),
+                AvailableCategories = await new ItemCategoryHelper().GetAllItemCategories(),
                 AssociatedAttributes = await new ItemAttributeHelper().GetBareAttributes()
             };
             return View(newItem);
@@ -77,20 +77,37 @@ namespace GoldInventory.Controllers
         public async Task<ActionResult> Edit(string id)
         {
             var item = await new ItemHelper().GetItemById(id);
-            item.AvailableCategories = await new ItemCategoryHelper().GetAllItems();
+            item.AvailableCategories = await new ItemCategoryHelper().GetAllItemCategories();
             return View(item);
         }
 
         // POST: Reviews/Edit/5
         [HttpPost]
-        public async Task<ActionResult> Edit(string id, Item item)
+        public async Task<ActionResult> Edit(string id, FormCollection collection)
         {
             if (ModelState.IsValid)
             {
-                await new ItemHelper().SaveItem(item);
+                var attributes = (await new ItemAttributeHelper().GetBareAttributes()).ToList();
+                attributes.ForEach(attr =>
+                {
+                    attr.Value = collection[attr.AttributeId];
+                    attr.ItemId = id;
+                    attr.Id = collection[attr.AttributeId + attr.ItemId];
+                });
+                var newItem = new Item
+                {
+                    Id = id,
+                    AssociatedAttributes = attributes,
+                    CategoryId = collection["CategoryId"],
+                    ItemWeight = int.Parse(collection["ItemWeight"]),
+                    StoneWeight = int.Parse(collection["StoneWeight"]),
+                    Name = collection["Name"]
+                };
+                await new ItemHelper().SaveItem(newItem);
                 return RedirectToAction("Index");
             }
 
+            var item = await new ItemHelper().GetItemById(id);
             return View(item);
         }
 

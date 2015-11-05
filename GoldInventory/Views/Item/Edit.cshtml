@@ -48,6 +48,26 @@
             </div>
         </div>
 
+        @foreach (var attr in Model.AssociatedAttributes)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-2">@attr.AttributeName</label>
+                <div class="col-md-10">
+                    @if (attr.AttributeType == "string")
+                    {
+                        <input id="@attr.AttributeId" value="@attr.Value" name="@attr.AttributeId" class="form-control" />
+                        <span class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="@attr.AttributeId"></span>
+                    }
+                    else
+                    {
+                        <input id="@attr.AttributeId" type="number" value="@attr.Value" name="@attr.AttributeId" class="form-control" />
+                        <span class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="@attr.AttributeId"></span>
+                    }
+                    
+                    <input id="@attr.AttributeId@attr.ItemId" name="@attr.AttributeId@attr.ItemId" value="@attr.Id" type="hidden"/>
+                </div>
+            </div>
+        }
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

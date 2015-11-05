@@ -92,7 +92,7 @@ namespace GoldInventory.ParseWrappers
             if (rawItem == null)
                 return false;
 
-            var allItemAttributes = (await new ItemAttributeHelper().GetAllRawItemAttributesByIds(new List<string> {id}))?.ToList();
+            var allItemAttributes = (await new ItemAttributeHelper().GetAllRawItemAttributesByAttrIds(new List<string> {id}))?.ToList();
             if (allItemAttributes != null && allItemAttributes.Any())
             {
                 var deleteTasks = allItemAttributes.Select(attr => attr.DeleteAsync()).ToList();

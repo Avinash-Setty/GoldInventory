@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoldInventory.Model;
 using GoldInventory.Models;
 using Parse;
 using WebGrease.Css.Extensions;
@@ -26,7 +27,7 @@ namespace GoldInventory.ParseWrappers
             if (items == null)
                 return new List<Item>();
 
-            var allCategories = (await new ItemCategoryHelper().GetAllItems()).ToList();
+            var allCategories = (await new ItemCategoryHelper().GetAllItemCategories()).ToList();
             var filteredItems = new List<Item>();
             foreach (var item in items)
             {
@@ -57,7 +58,25 @@ namespace GoldInventory.ParseWrappers
             var allAttrs = await new AttributeHelper().GetAllAttributes();
             var allItemAttrs = (await new ItemAttributeHelper().GetAllItemAttributesByItemIds(items.Select(i => i.Id))).ToList();
             allItemAttrs.ForEach(i => i.AttributeName = allAttrs.FirstOrDefault(a => a.Id == i.AttributeId)?.Name ?? "Error");
-            items.ForEach(i => i.AssociatedAttributes = allItemAttrs.Where(a => a.ItemId == i.Id));
+            items.ForEach(i =>
+            {
+                var attrs = allItemAttrs.Where(a => a.ItemId == i.Id).ToList();
+                attrs.ForEach(a => a.AttributeType = allAttrs.FirstOrDefault(aa => aa.Id == a.AttributeId)?.Type);
+                var bareAttrsNotPresent = allAttrs.Where(a => attrs.All(l => l.AttributeId != a.Id)).ToList();
+                if (bareAttrsNotPresent.Any())
+                {
+                    attrs.AddRange(bareAttrsNotPresent.Select(b => new ItemAttribute
+                    {
+                        ItemId = i.Id,
+                        Value = "",
+                        AttributeId = b.Id,
+                        AttributeName = b.Name,
+                        AttributeType = b.Type
+                    }).ToList());
+                }
+
+                i.AssociatedAttributes = attrs.OrderBy(a => a.AttributeName);
+            });
         }
 
         public async Task SaveItem(Item item)
@@ -120,11 +139,15 @@ namespace GoldInventory.ParseWrappers
             if (rawItem == null)
                 return false;
 
+            var result = await new ItemAttributeHelper().DeleteItemAttributeByItemId(id);
+            if (!result)
+                return false;
+
             await rawItem.DeleteAsync();
             return true;
         } 
 
-        public async Task<IEnumerable<Item>> GetItemsByName(string name)
+        public async Task<IEnumerable<Item>> GetItemsByName(string name, bool associateAttributes = true)
         {
             var currentUser = await UserUtility.GetCurrentParseUser();
             if (currentUser == null)
@@ -132,7 +155,7 @@ namespace GoldInventory.ParseWrappers
 
             var itemQuery = ParseObject.GetQuery("Item").WhereEqualTo("CompanyId", currentUser["CompanyId"].ToString()).WhereContains("Name", name);
             var items = await itemQuery.FindAsync();
-            return items?.Select(itemObject => new Item
+            var itemObjects = items?.Select(itemObject => new Item
             {
                 Id = itemObject.ObjectId,
                 Name = itemObject.Get<string>("Name"),
@@ -141,7 +164,11 @@ namespace GoldInventory.ParseWrappers
                 CategoryId = itemObject.Get<string>("CategoryId"),
                 UpdatedAt = itemObject.UpdatedAt,
                 CreatedAt = itemObject.CreatedAt
-            });
+            }).ToList();
+            if (associateAttributes)
+                await AssociateAllItems(itemObjects);
+
+            return itemObjects;
         }
     }
 }
