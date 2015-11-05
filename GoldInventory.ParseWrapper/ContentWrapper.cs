@@ -29,8 +29,6 @@ namespace GoldInventory.ParseWrapper
                     {
                         Name = r["Name"]?.ToString(),
                         Id = r.ObjectId,
-                        ItemWeight = r.Get<int>("ItemWeight"),
-                        StoneWeight = r.Get<int>("StoneWeight"),
                         UpdatedAt = r.UpdatedAt,
                         CreatedAt = r.CreatedAt
                     });

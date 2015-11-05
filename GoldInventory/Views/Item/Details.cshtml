@@ -26,22 +26,6 @@
             @Html.DisplayFor(model => model.CategoryName)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StoneWeight)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StoneWeight)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ItemWeight)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ItemWeight)
-        </dd>
-
         @foreach (var attr in Model.AssociatedAttributes)
         {
             <dt>@attr.AttributeName</dt>

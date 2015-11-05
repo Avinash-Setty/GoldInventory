@@ -58,8 +58,6 @@ namespace GoldInventory.Controllers
                     {
                         AssociatedAttributes = attributes,
                         CategoryId = collection["CategoryId"],
-                        ItemWeight = int.Parse(collection["ItemWeight"]),
-                        StoneWeight = int.Parse(collection["StoneWeight"]),
                         Name = collection["Name"]
                     };
                     await new ItemHelper().SaveItem(newItem);
@@ -99,8 +97,6 @@ namespace GoldInventory.Controllers
                     Id = id,
                     AssociatedAttributes = attributes,
                     CategoryId = collection["CategoryId"],
-                    ItemWeight = int.Parse(collection["ItemWeight"]),
-                    StoneWeight = int.Parse(collection["StoneWeight"]),
                     Name = collection["Name"]
                 };
                 await new ItemHelper().SaveItem(newItem);

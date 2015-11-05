@@ -13,14 +13,6 @@ namespace GoldInventory.Models
 
         public DateTime? UpdatedAt { get; set; }
 
-        [Range(1,1000)]
-        [Required]
-        public int StoneWeight { get; set; }
-
-        [Range(1, 1000)]
-        [Required]
-        public int ItemWeight { get; set; }
-
         [Required]
         [StringLength(512)]
         public string Name { get; set; }

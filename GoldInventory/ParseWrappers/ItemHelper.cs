@@ -43,8 +43,6 @@ namespace GoldInventory.ParseWrappers
                     CreatedAt = item.CreatedAt,
                     UpdatedAt = item.UpdatedAt,
                     Name = item["Name"]?.ToString(),
-                    ItemWeight = item.Get<int>("ItemWeight"),
-                    StoneWeight = item.Get<int>("StoneWeight"),
                     CategoryName = allCategories.FirstOrDefault(c => c.Id == item.Get<string>("CategoryId"))?.Name
                 });
             }
@@ -90,8 +88,6 @@ namespace GoldInventory.ParseWrappers
                 itemObject.ObjectId = item.Id;
 
             itemObject["Name"] = item.Name;
-            itemObject["ItemWeight"] = item.ItemWeight;
-            itemObject["StoneWeight"] = item.StoneWeight;
             itemObject["CategoryId"] = item.CategoryId;
             itemObject["CompanyId"] = currentUser["CompanyId"].ToString();
             await itemObject.SaveAsync();
@@ -108,8 +104,6 @@ namespace GoldInventory.ParseWrappers
             {
                 Id = itemObject.ObjectId,
                 Name = itemObject.Get<string>("Name"),
-                ItemWeight = itemObject.Get<int>("ItemWeight"),
-                StoneWeight = itemObject.Get<int>("StoneWeight"),
                 CategoryName = category?.Name,
                 CategoryId = category?.Id,
                 UpdatedAt = itemObject.UpdatedAt,
@@ -159,8 +153,6 @@ namespace GoldInventory.ParseWrappers
             {
                 Id = itemObject.ObjectId,
                 Name = itemObject.Get<string>("Name"),
-                ItemWeight = itemObject.Get<int>("ItemWeight"),
-                StoneWeight = itemObject.Get<int>("StoneWeight"),
                 CategoryId = itemObject.Get<string>("CategoryId"),
                 UpdatedAt = itemObject.UpdatedAt,
                 CreatedAt = itemObject.CreatedAt

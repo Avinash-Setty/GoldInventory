@@ -14,12 +14,6 @@
                 <th>
                     Category
                 </th>
-                <th>
-                    StoneWeight
-                </th>
-                <th>
-                    ItemWeight
-                </th>
                 @foreach (var attr in (IEnumerable<string>)ViewData["AttributeNames"])
                 {
                     <th>
@@ -43,12 +37,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CategoryName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StoneWeight)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ItemWeight)
                     </td>
                     @foreach (var attr in item.AssociatedAttributes)
                     {
@@ -89,14 +77,6 @@
                             <tr>
                                 <td>Category</td>
                                 <td>@item.CategoryName</td>
-                            </tr>
-                            <tr>
-                                <td>StoneWeight</td>
-                                <td>@item.StoneWeight</td>
-                            </tr>
-                            <tr>
-                                <td>ItemWeight</td>
-                                <td>@item.ItemWeight</td>
                             </tr>
                             @foreach (var attr in item.AssociatedAttributes)
                             {
