@@ -35,7 +35,7 @@
         @foreach (var attr in Model.AssociatedAttributes)
         {
             <div class="form-group">
-                <label class="control-label col-md-2">@attr.AttributeName</label>
+                <h4 class="col-md-2 text-right remove_top_bottom_margins control-label"><span class="label label-default">@attr.AttributeName</span></h4>
                 <div class="col-md-10">
                     @if (attr.AttributeType == "string")
                     {

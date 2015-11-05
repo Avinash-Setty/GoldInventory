@@ -23,8 +23,8 @@
 
         @foreach (var attr in Model.AssociatedAttributes)
         {
-            <dt>@attr.AttributeName</dt>
-            <dd>@attr.Value</dd>
+            <dt class="margin-bottom-2"><span class="label label-default reset_label">@attr.AttributeName</span></dt>
+            <dd class="padding-top-2 margin-bottom-2">@attr.Value</dd>
         }
 
         <dt>

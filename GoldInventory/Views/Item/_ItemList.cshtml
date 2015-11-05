@@ -17,7 +17,7 @@
                 @foreach (var attr in (IEnumerable<string>)ViewData["AttributeNames"])
                 {
                     <th>
-                        @attr
+                        <h4 class="remove_top_bottom_margins"><span class="label label-default">@attr</span></h4>
                     </th>
                 }
                 <th>
@@ -82,7 +82,7 @@
                             {
                                 <tr>
                                     <td>
-                                        @attr.AttributeName
+                                        <h4 class="remove_top_bottom_margins"><span class="label label-default">@attr.AttributeName</span></h4>
                                     </td>
                                     <td>
                                         @attr.Value

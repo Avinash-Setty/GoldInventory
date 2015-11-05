@@ -31,9 +31,9 @@
         </div>
 
         @foreach (var attr in Model.AssociatedAttributes)
-        {  
+        {
             <div class="form-group">
-                <label class="control-label col-md-2">@attr.AttributeName</label>
+                <h4 class="col-md-2 text-right remove_top_bottom_margins control-label"><span class="label label-default">@attr.AttributeName</span></h4>
                 <div class="col-md-10">
                     @if (attr.AttributeType == "string")
                     {
@@ -42,7 +42,7 @@
                     }
                     else
                     {
-                        <input id="@attr.AttributeId" type="number" name="@attr.AttributeId" class="form-control" />
+                        <input id="@attr.AttributeId" type="number" name="@attr.AttributeId" class="form-control"/>
                         <span class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="@attr.AttributeId"></span>
                     }
                 </div>
