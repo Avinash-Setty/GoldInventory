@@ -6,43 +6,55 @@
 
 <h2>Create</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("Create", "Item", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Item</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new {htmlAttributes = new {@class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.AvailableCategories,"Id", "Name"), new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.AvailableCategories, "Id", "Name"), new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Photo</label>
+            <div class="col-md-10">
+                <span class="btn btn-success fileinput-button">
+                    <i class="glyphicon glyphicon-camera"></i>
+                    <span id="AddPhotosText">Add Photo</span>
+                    <input type="file" accept="image/*" name="Photo" id="Photo" value="Camera" title="Camera" onchange="updateFileName(this)" />
+                </span>
+                <span id="fileNameSpan"></span>
             </div>
         </div>
 
         @foreach (var attr in Model.AssociatedAttributes)
         {
             <div class="form-group">
-                <h4 class="col-md-2 text-right remove_top_bottom_margins control-label"><span class="label label-default">@attr.AttributeName</span></h4>
+                <label class="control-label col-md-2">@attr.AttributeName</label>
                 <div class="col-md-10">
                     @if (attr.AttributeType == "string")
                     {
-                        <input id="@attr.AttributeId" name="@attr.AttributeId" class="form-control"/>
+                        <input id="@attr.AttributeId" name="@attr.AttributeId" class="form-control" />
                         <span class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="@attr.AttributeId"></span>
                     }
                     else
                     {
-                        <input id="@attr.AttributeId" type="number" name="@attr.AttributeId" class="form-control"/>
+                        <input id="@attr.AttributeId" type="number" name="@attr.AttributeId" class="form-control" />
                         <span class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="@attr.AttributeId"></span>
                     }
                 </div>

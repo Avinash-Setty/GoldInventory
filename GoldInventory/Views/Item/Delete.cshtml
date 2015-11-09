@@ -4,45 +4,57 @@
 <div>
     <h4>Item</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+    <table class="table table-hover table-responsive">
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Name)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.Name)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.CategoryName)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.CategoryName)
+            </td>
+        </tr>
+        
 
         @foreach (var attr in Model.AssociatedAttributes)
         {
-            <dt class="margin-bottom-2"><span class="label label-default reset_label">@attr.AttributeName</span></dt>
-            <dd class="padding-top-2 margin-bottom-2">@attr.Value</dd>
+            <tr>
+                <td class="margin-bottom-2"><span class="label label-default reset_label">@attr.AttributeName</span></td>
+                <td class="padding-top-2 margin-bottom-2">@attr.Value</td>
+            </tr>
         }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.CreatedAt)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedAt)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedAt)
-        </dd>
-    </dl>
+            <td>
+                @Html.DisplayFor(model => model.UpdatedAt)
+            </td>
+        </tr>
+        
+    </table>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()

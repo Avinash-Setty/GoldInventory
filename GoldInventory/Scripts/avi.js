@@ -1,4 +1,4 @@
-﻿$(function () {
+﻿$(function() {
 
     var ajaxFormSubmit = function() {
         var $form = $(this);
@@ -56,4 +56,13 @@
     $("form[data-avi-ajax='true']").submit(ajaxFormSubmit);
     $("input[data-avi-autocomplete]").each(createAutoComplete);
     $(".body-content").on("click", ".pager a", getPage);
-})
+
+});
+
+function updateFileName(fileControl) {
+    var dt = new Date();
+    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+    $("#fileNameSpan").text("Updated at " + time);
+    $("#AddPhotosText").text("Update Photo");
+}
+

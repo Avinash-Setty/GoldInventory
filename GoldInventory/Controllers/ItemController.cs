@@ -58,7 +58,9 @@ namespace GoldInventory.Controllers
                     {
                         AssociatedAttributes = attributes,
                         CategoryId = collection["CategoryId"],
-                        Name = collection["Name"]
+                        Name = collection["Name"],
+                        PhotoStream = (Request.Files.Count > 0) ? Request.Files[0]?.InputStream : null,
+                        PhotoContentType = (Request.Files.Count > 0) ? Request.Files[0]?.ContentType : null
                     };
                     await new ItemHelper().SaveItem(newItem);
                     return RedirectToAction("Index");
@@ -97,7 +99,9 @@ namespace GoldInventory.Controllers
                     Id = id,
                     AssociatedAttributes = attributes,
                     CategoryId = collection["CategoryId"],
-                    Name = collection["Name"]
+                    Name = collection["Name"],
+                    PhotoStream = (Request.Files.Count > 0) ? Request.Files[0]?.InputStream : null,
+                    PhotoContentType = (Request.Files.Count > 0) ? Request.Files[0]?.ContentType : null
                 };
                 await new ItemHelper().SaveItem(newItem);
                 return RedirectToAction("Index");
@@ -135,6 +139,7 @@ namespace GoldInventory.Controllers
         public async Task<ActionResult> Details(string id)
         {
             var item = await new ItemHelper().GetItemById(id);
+            
             return View(item);
         }
     }

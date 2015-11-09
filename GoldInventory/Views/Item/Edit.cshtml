@@ -4,14 +4,43 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
-
-@using (Html.BeginForm())
+<h2>Edit Item</h2>
+@using (Html.BeginForm("Edit", "Item", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+if (Model.PhotoUri != null)
+{
+    <div class="text-center">
+        <img src="@Model.PhotoUri.AbsoluteUri" class="border" width="300" height="300"/>
+        <div>
+            <a target="_blank" href="@Model.PhotoUri.AbsoluteUri">Enlarge Photo</a>
+        </div>
+    </div>
+    <div>
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-camera"></i>
+            <span id="AddPhotosText">Update Photo</span>
+            <input type="file" accept="image/*" name="Photo" id="Photo" value="Camera" title="Camera" onchange="updateFileName(this)" />
+        </span>
+        <span id="fileNameSpan"></span>
+    </div>
+}
+else
+{
+    <div>
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-camera"></i>
+            <span id="AddPhotosText">Add Photo</span>
+            <input type="file" accept="image/*" name="Photo" id="Photo" value="Camera" title="Camera" onchange="updateFileName(this)" />
+        </span>
+        <span id="fileNameSpan"></span>
+    </div>
+}
+<span class="text-info"><i class="glyphicon glyphicon-info-sign"></i> Refresh the page to see the updated photo.</span>
+
+
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Item</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
@@ -35,7 +64,7 @@
         @foreach (var attr in Model.AssociatedAttributes)
         {
             <div class="form-group">
-                <h4 class="col-md-2 text-right remove_top_bottom_margins control-label"><span class="label label-default">@attr.AttributeName</span></h4>
+                <label class="control-label col-md-2">@attr.AttributeName</label>
                 <div class="col-md-10">
                     @if (attr.AttributeType == "string")
                     {

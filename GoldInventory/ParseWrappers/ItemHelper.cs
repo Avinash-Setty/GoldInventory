@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GoldInventory.Model;
@@ -90,10 +92,40 @@ namespace GoldInventory.ParseWrappers
             itemObject["Name"] = item.Name;
             itemObject["CategoryId"] = item.CategoryId;
             itemObject["CompanyId"] = currentUser["CompanyId"].ToString();
+            itemObject["PhotoId"] = (item.PhotoStream != null)
+                ? await UploadPhoto(item.PhotoStream, item.PhotoContentType, item.Name, item.PhotoId)
+                : null;
             await itemObject.SaveAsync();
 
             item.AssociatedAttributes.ForEach(attr => attr.ItemId = itemObject.ObjectId);
             await new ItemAttributeHelper().SaveAllItemAttributes(item.AssociatedAttributes);
+        }
+
+        public async Task<string> UploadPhoto(Stream imageStream, string contentType, string name, string photoId)
+        {
+            var parsePhoto = new ParseFile(name, imageStream, contentType);
+            await parsePhoto.SaveAsync();
+
+            var itemImage = new ParseObject("Photo")
+            {
+                ["RawData"] = parsePhoto,
+                ["Name"] = name
+            };
+            if (!string.IsNullOrWhiteSpace(photoId))
+                itemImage.ObjectId = photoId;
+
+            await itemImage.SaveAsync();
+            return itemImage.ObjectId;
+        }
+
+        public async Task<Uri> GetPhotoById(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return null;
+
+            var photo = await ParseObject.GetQuery("Photo").GetAsync(id);
+            var stream = photo?["RawData"] as ParseFile;
+            return stream?.Url;
         }
 
         public async Task<Item> GetItemById(string id)
@@ -107,7 +139,9 @@ namespace GoldInventory.ParseWrappers
                 CategoryName = category?.Name,
                 CategoryId = category?.Id,
                 UpdatedAt = itemObject.UpdatedAt,
-                CreatedAt = itemObject.CreatedAt
+                CreatedAt = itemObject.CreatedAt,
+                PhotoUri = (itemObject.ContainsKey("PhotoId")) ? await GetPhotoById(itemObject.Get<string>("PhotoId")) : null,
+                PhotoId = (itemObject.ContainsKey("PhotoId")) ? itemObject.Get<string>("PhotoId") : null
             };
             await AssociateAllItems(new List<Item> {item});
             return item;

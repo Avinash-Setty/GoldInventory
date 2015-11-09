@@ -4,39 +4,48 @@
 <div>
     <h4>ItemCategory</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+    <table class="table table-hover table-responsive">
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Name)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.Name)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Description)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.Description)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.CreatedAt)
+            </td>
+        </tr>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedAt)
-        </dt>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedAt)
-        </dd>
-    </dl>
+            <td>
+                @Html.DisplayFor(model => model.UpdatedAt)
+            </td>
+        </tr>
+
+    </table>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()

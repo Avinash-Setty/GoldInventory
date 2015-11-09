@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using GoldInventory.Model;
 
 namespace GoldInventory.Models
@@ -21,6 +22,14 @@ namespace GoldInventory.Models
 
         [Display(Name = "Category")]
         public string CategoryName { get; set; }
+
+        public Stream PhotoStream { get; set; }
+
+        public Uri PhotoUri { get; set; }
+
+        public string PhotoId { get; set; }
+
+        public string PhotoContentType { get; set; }
 
         public IEnumerable<ItemAttribute> AssociatedAttributes { get; set; }
 
