@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using GoldInventory.Model;
 using GoldInventory.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

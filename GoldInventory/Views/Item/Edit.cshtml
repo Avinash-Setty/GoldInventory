@@ -1,4 +1,4 @@
-﻿@model GoldInventory.Models.Item
+﻿@model GoldInventory.Model.Item
 
 @{
     ViewBag.Title = "Edit";
@@ -7,10 +7,10 @@
 <h2>Edit Item</h2>
 @using (Html.BeginForm("Edit", "Item", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-if (Model.PhotoUri != null)
+if (Model.ThumbnailUri != null)
 {
     <div class="text-center">
-        <img src="@Model.PhotoUri.AbsoluteUri" class="border" width="300" height="300"/>
+        <img src="@Model.ThumbnailUri.AbsoluteUri" width="300" height="300"/>
         <div>
             <a target="_blank" href="@Model.PhotoUri.AbsoluteUri">Enlarge Photo</a>
         </div>
@@ -35,7 +35,7 @@ else
         <span id="fileNameSpan"></span>
     </div>
 }
-<span class="text-info"><i class="glyphicon glyphicon-info-sign"></i> Refresh the page to see the updated photo.</span>
+<span class="text-info"><i class="glyphicon glyphicon-info-sign"></i> You could see the updated photo only after Save.</span>
 
 
     @Html.AntiForgeryToken()

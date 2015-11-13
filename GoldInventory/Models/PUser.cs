@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using GoldInventory.Model;
 using GoldInventory.ParseWrappers;
 using Microsoft.AspNet.Identity;
 using Parse;

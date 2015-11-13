@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using GoldInventory.Model;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 using PagedList;
@@ -66,11 +67,21 @@ namespace GoldInventory.Controllers
                     return RedirectToAction("Index");
                 }
 
-                return View();
+                var placeHolder = new Item
+                {
+                    AvailableCategories = await new ItemCategoryHelper().GetAllItemCategories(),
+                    AssociatedAttributes = await new ItemAttributeHelper().GetBareAttributes()
+                };
+                return View(placeHolder);
             }
             catch
             {
-                return View();
+                var placeHolder = new Item
+                {
+                    AvailableCategories = await new ItemCategoryHelper().GetAllItemCategories(),
+                    AssociatedAttributes = await new ItemAttributeHelper().GetBareAttributes()
+                };
+                return View(placeHolder);
             }
         }
 

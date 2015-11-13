@@ -5,6 +5,7 @@ using GoldInventory.ParseWrappers;
 
 namespace GoldInventory.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         // GET: Category
@@ -33,6 +34,9 @@ namespace GoldInventory.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return View();
+
                 await new ItemCategoryHelper().SaveItemCategory(newCategory);
                 return RedirectToAction("Index");
             }
@@ -55,12 +59,15 @@ namespace GoldInventory.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return View(editedCategory);
+
                 await new ItemCategoryHelper().SaveItemCategory(editedCategory);
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(editedCategory);
             }
         }
 

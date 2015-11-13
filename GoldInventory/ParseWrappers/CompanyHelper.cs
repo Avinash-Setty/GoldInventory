@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GoldInventory.Model;
 using GoldInventory.Models;
 using Parse;
 

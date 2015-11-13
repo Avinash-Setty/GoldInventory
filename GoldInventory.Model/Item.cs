@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using GoldInventory.Model;
 
-namespace GoldInventory.Models
+namespace GoldInventory.Model
 {
     public class Item
     {
+        [Key]
         public string Id { get; set; }
 
         public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Name is required!")]
         [StringLength(512)]
         public string Name { get; set; }
 
@@ -26,6 +26,8 @@ namespace GoldInventory.Models
         public Stream PhotoStream { get; set; }
 
         public Uri PhotoUri { get; set; }
+
+        public Uri ThumbnailUri { get; set; }
 
         public string PhotoId { get; set; }
 

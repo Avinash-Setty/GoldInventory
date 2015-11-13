@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoldInventory.Model;
 using GoldInventory.Models;
+using ImageResizer;
 using Parse;
 using WebGrease.Css.Extensions;
 
@@ -15,6 +16,7 @@ namespace GoldInventory.ParseWrappers
         public static readonly string String = "string";
         public static readonly string Number = "number";
     }
+
     public class ItemHelper
     {
         public async Task<IEnumerable<Item>> GetAllItems()
@@ -92,7 +94,7 @@ namespace GoldInventory.ParseWrappers
             itemObject["Name"] = item.Name;
             itemObject["CategoryId"] = item.CategoryId;
             itemObject["CompanyId"] = currentUser["CompanyId"].ToString();
-            itemObject["PhotoId"] = (item.PhotoStream != null)
+            itemObject["PhotoId"] = (item.PhotoStream != null && item.PhotoStream.Length > 0)
                 ? await UploadPhoto(item.PhotoStream, item.PhotoContentType, item.Name, item.PhotoId)
                 : null;
             await itemObject.SaveAsync();
@@ -103,9 +105,13 @@ namespace GoldInventory.ParseWrappers
 
         public async Task<string> UploadPhoto(Stream imageStream, string contentType, string name, string photoId)
         {
-            var parsePhoto = new ParseFile(name, imageStream, contentType);
-            await parsePhoto.SaveAsync();
-
+            ParseFile parsePhoto;
+            using (var originalImageStream = imageStream)
+            {
+                parsePhoto = new ParseFile(name, originalImageStream, contentType);
+                await parsePhoto.SaveAsync();
+            }
+           
             var itemImage = new ParseObject("Photo")
             {
                 ["RawData"] = parsePhoto,
@@ -118,20 +124,53 @@ namespace GoldInventory.ParseWrappers
             return itemImage.ObjectId;
         }
 
-        public async Task<Uri> GetPhotoById(string id)
+        public Stream ResizeImage(Stream image, int width, int height)
+        {
+            var config = new ImageResizer.Configuration.Config();
+            var buffer = new MemoryStream();
+            var job = new ImageJob(image, buffer, new Instructions($"width={width}"));
+            config.Build(job);
+            return buffer;
+
+            //var resizedImage = new Bitmap(image);
+            //var result = new Bitmap(width, height);
+            //result.SetResolution(resizedImage.HorizontalResolution, resizedImage.VerticalResolution);
+            //using (Graphics graphics = Graphics.FromImage(result))
+            //{
+            //    graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+            //    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            //    graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            //    graphics.DrawImage(resizedImage, 0, 0, width, height);
+            //}
+
+            //resizedImage.Dispose();
+            //await _storageHelper.Storefile(result, _thumbnailImage);
+            //return await _storageHelper.GetFile(_thumbnailImage);
+        }
+
+        public async Task<ParseObject> GetPhotoById(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return null;
 
             var photo = await ParseObject.GetQuery("Photo").GetAsync(id);
-            var stream = photo?["RawData"] as ParseFile;
-            return stream?.Url;
+            return photo;
         }
 
         public async Task<Item> GetItemById(string id)
         {
             var itemObject = await GetRawItemObjectById(id);
             var category = new ItemCategoryHelper().GetItemCategoryById(itemObject.Get<string>("CategoryId"));
+
+            Uri photoUri = null;
+            Uri thumbUri = null;
+            if (itemObject.ContainsKey("PhotoId"))
+            {
+                var photo = await GetPhotoById(itemObject.Get<string>("PhotoId"));
+                photoUri = (photo?["RawData"] as ParseFile)?.Url;
+                thumbUri = (photo?["RawData"] as ParseFile)?.Url;
+            }
+
             var item = new Item
             {
                 Id = itemObject.ObjectId,
@@ -140,8 +179,9 @@ namespace GoldInventory.ParseWrappers
                 CategoryId = category?.Id,
                 UpdatedAt = itemObject.UpdatedAt,
                 CreatedAt = itemObject.CreatedAt,
-                PhotoUri = (itemObject.ContainsKey("PhotoId")) ? await GetPhotoById(itemObject.Get<string>("PhotoId")) : null,
-                PhotoId = (itemObject.ContainsKey("PhotoId")) ? itemObject.Get<string>("PhotoId") : null
+                PhotoUri = photoUri,
+                PhotoId = (itemObject.ContainsKey("PhotoId")) ? itemObject.Get<string>("PhotoId") : null,
+                ThumbnailUri = thumbUri
             };
             await AssociateAllItems(new List<Item> {item});
             return item;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using GoldInventory.Controllers;
+using GoldInventory.Model;
 using GoldInventory.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

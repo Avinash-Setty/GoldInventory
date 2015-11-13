@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using GoldInventory.Model;
 using Microsoft.AspNet.Identity.Owin;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;

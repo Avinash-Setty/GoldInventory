@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GoldInventory.Core;
-using GoldInventory.Models;
+using GoldInventory.Model;
 using Parse;
 
 namespace GoldInventory.ParseWrapper

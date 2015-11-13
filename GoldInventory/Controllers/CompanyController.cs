@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using System.Web.UI;
+using GoldInventory.Model;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 using Microsoft.AspNet.Identity;
@@ -40,9 +41,9 @@ namespace GoldInventory.Controllers
         }
 
         // GET: Company/Edit/5
-        public ActionResult Edit()
+        public async Task<ActionResult> Edit()
         {
-            var companyInfo = new CompanyHelper().GetCurrentCompany();
+            var companyInfo = await new CompanyHelper().GetCurrentCompany();
             return View(companyInfo);
         }
 
@@ -52,6 +53,9 @@ namespace GoldInventory.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return View(companyInfo);
+
                 await new CompanyHelper().SaveCompany(companyInfo);
                 return RedirectToAction("Index");
             }
