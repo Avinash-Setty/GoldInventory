@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using GoldInventory.Models;
 using GoldInventory.ParseWrappers;
 using PagedList;
+using Parse;
 
 namespace GoldInventory.Controllers
 {
@@ -30,6 +31,28 @@ namespace GoldInventory.Controllers
             }
 
             return View(users);
+        }
+
+        [AllowAnonymous]
+        public ActionResult ForgotPassword()
+        {
+            return View(new ForgotPasswordModel {Message = ""});
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            var user = await new UserHelper().GetCompanyUserByEmail(model.Email);
+            if (user == null)
+            {
+                model.Message = "We don't find any user matching this email. Please check your email.";
+                return View(model);
+            }
+
+            await ParseUser.RequestPasswordResetAsync(model.Email);
+            model.Message = $"An email has been sent to {model.Email} with password reset link. Click on that link and submit your new password.";
+            return View(model);
         }
 
         // GET: User/Create

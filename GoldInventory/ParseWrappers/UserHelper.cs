@@ -28,6 +28,21 @@ namespace GoldInventory.ParseWrappers
             return allUsers;
         }
 
+        public async Task<PUser> GetCompanyUserByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+
+            var emailQuery = from user in ParseUser.Query
+                where user.Email.Equals(email)
+                select user;
+            var users = (await GetCurrentCompanyUsers(emailQuery))?.ToList();
+            if (users == null || !users.Any())
+                return null;
+
+            return users.FirstOrDefault();
+        } 
+
         public async Task<IEnumerable<PUser>> GetCurrentCompanyUsers(ParseQuery<ParseUser> query = null)
         {
             IEnumerable<ParseUser> currentCompanyUsers;

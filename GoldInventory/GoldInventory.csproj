@@ -288,6 +288,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ForgotPasswordModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ItemReview.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -450,6 +451,7 @@
     <Content Include="Views\CustomAttribute\Create.cshtml" />
     <Content Include="Views\CustomAttribute\Edit.cshtml" />
     <Content Include="Views\CustomAttribute\Delete.cshtml" />
+    <Content Include="Views\User\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
