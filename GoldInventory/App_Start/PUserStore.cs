@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using GoldInventory.Models;
@@ -20,8 +21,8 @@ namespace GoldInventory
 
         public PUserStore()
         {
-            ParseClient.Initialize("WinpiYKuQBxG6jGeBtwX5rkQBclHyolE2LyQSASt",
-                "9nJ6TOnG59z07qUpiQWIsfhML5flFxt64VpDppPs");
+            ParseClient.Initialize(ConfigurationManager.AppSettings["ParseApplicationKey"] ?? "WinpiYKuQBxG6jGeBtwX5rkQBclHyolE2LyQSASt",
+                ConfigurationManager.AppSettings["ParseDotNetKey"] ?? "9nJ6TOnG59z07qUpiQWIsfhML5flFxt64VpDppPs");
         }
 
         public void Dispose()

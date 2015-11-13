@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GoldInventory.Models;
+using Parse;
 
 namespace GoldInventory.Controllers
 {
@@ -211,24 +212,11 @@ namespace GoldInventory.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword()
+        public async Task<ActionResult> ChangePassword()
         {
-            return View();
-        }
-
-        //
-        // POST: /Manage/ChangePassword
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
-        {
-            if (!ModelState.IsValid)
+            if (ParseUser.CurrentUser != null)
             {
-                return View(model);
-            }
-            var result = await UserStore.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-            if (result.Succeeded)
-            {
+                await ParseUser.RequestPasswordResetAsync(ParseUser.CurrentUser.Email);
                 var user = await UserStore.FindByIdAsync(User.Identity.GetUserId());
                 if (user != null)
                 {
@@ -236,8 +224,8 @@ namespace GoldInventory.Controllers
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
-            AddErrors(result);
-            return View(model);
+
+            return View(new ChangePasswordViewModel {Message = "Unknown error has occurred. Please try once again."});
         }
 
         //
